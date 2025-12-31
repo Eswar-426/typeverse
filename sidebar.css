@@ -1,0 +1,33 @@
+.tv-sidebar{
+  position:fixed;
+  top:56px;
+  bottom:44px;
+  left:-260px;
+  width:260px;
+  padding:20px;
+  transition:0.3s ease;
+  z-index:2000;
+}
+
+.tv-sidebar.open{
+  left:0;
+}
+
+.tv-sidebar nav{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:20px;
+}
+
+.tv-sidebar a{
+  color:var(--text);
+  text-decoration:none;
+  padding:10px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.08);
+}
+
+.tv-sidebar a:hover{
+  background:rgba(255,255,255,0.15);
+}

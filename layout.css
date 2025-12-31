@@ -1,0 +1,118 @@
+/* ========== HEADER ========== */
+
+.tv-header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:56px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 16px;
+  z-index:3000;
+}
+
+.tv-header .logo{
+  font-size:18px;
+  font-weight:600;
+}
+
+/* ========== MAIN ========== */
+.tv-main{
+  padding-top:80px;
+  padding-bottom:70px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+
+
+/* ========== FOOTER ========== */
+.tv-footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:44px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 16px;
+  font-size:13px;
+}
+#textDisplay{
+  margin-bottom:14px;
+}
+
+#input{
+  margin-top:6px;
+}
+#results{
+  padding:28px 32px;
+}
+
+#results h2{
+  margin:0 0 16px 0;
+}
+
+#results p{
+  margin:8px 0;
+  font-size:15px;
+}
+
+#results canvas{
+  display:block;
+  margin:24px auto 16px;
+}/* ========== SELECT DROPDOWN FIX (DARK MODE) ========== */
+
+select{
+  background-color: rgba(255,255,255,0.15);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 8px 14px;
+  appearance: none;
+}
+
+/* Dropdown list */
+select option{
+  background-color: #0f172a;   /* deep dark */
+  color: #ffffff;
+}
+
+/* Hover / selected option */
+select option:checked,
+select option:hover{
+  background-color: #2563eb;
+  color: #ffffff;
+}
+body.light select{
+  background-color: rgba(0,0,0,0.05);
+  color: #1a1a2e;
+}
+
+body.light select option{
+  background-color: #ffffff;
+  color: #1a1a2e;
+}
+
+body.light select option:hover{
+  background-color: #e0e7ff;
+}
+.controls{
+  gap:14px;
+}
+
+select{
+  min-width:90px;
+}
+#customText{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  resize:none;
+}
+#customTime{
+  width:140px;
+}
