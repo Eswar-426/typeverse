@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TypeVerse – User Guide</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ================= THEME ================= */
+:root{
+  --bg1:#04044f;
+  --bg2:#27743e;
+  --glass:rgba(27,27,66,.28);
+  --border:rgba(0,212,255,.25);
+  --text:#ffffff;
+  --muted:#b0b0b0;
+  --cyan:#00d4ff;
+  --purple:#7b2cbf;
+}
+
+body.light{
+  --bg1:#f0f4ff;
+  --bg2:#c7d2fe;
+  --glass:rgba(255,255,255,.75);
+  --border:rgba(0,212,255,.3);
+  --text:#1a1a2e;
+  --muted:#5a5a7a;
+}
+
+/* ================= GLOBAL ================= */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:var(--text);
+  transition:.4s;
+}
+
+/* ================= GLASS ================= */
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+}
+
+/* ================= HEADER ================= */
+.header{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:56px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:0 18px;
+  z-index:1000;
+}
+.header a{
+  color:var(--cyan);
+  text-decoration:none;
+  font-weight:600;
+}
+.header span{
+  font-weight:600;
+}
+
+/* ================= LAYOUT ================= */
+.container{
+  max-width:1200px;
+  margin:90px auto 40px;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:20px;
+}
+
+/* ================= NAV ================= */
+.guide-nav{
+  position:sticky;
+  top:90px;
+  padding:16px;
+}
+.guide-nav h3{
+  margin:0 0 12px 0;
+  font-size:15px;
+  color:var(--muted);
+}
+.guide-nav button{
+  width:100%;
+  padding:10px 12px;
+  margin-bottom:8px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  text-align:left;
+  transition:.2s;
+}
+.guide-nav button:hover{
+  background:rgba(255,255,255,.18);
+}
+.guide-nav button.active{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  color:#000;
+  font-weight:600;
+}
+
+/* ================= CONTENT ================= */
+.guide-content{
+  padding:28px;
+}
+
+.guide-content h1{
+  margin-top:0;
+  font-size:30px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.guide-content h2{
+  margin-top:28px;
+}
+
+.guide-content p{
+  color:var(--muted);
+  line-height:1.7;
+  max-width:720px;
+}
+
+.guide-content ul{
+  margin-left:18px;
+}
+.guide-content li{
+  margin:8px 0;
+}
+
+.tip{
+  margin-top:16px;
+  padding:14px 16px;
+  border-left:4px solid var(--cyan);
+  background:rgba(255,255,255,.08);
+  border-radius:10px;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:900px){
+  .container{
+    grid-template-columns:1fr;
+  }
+  .guide-nav{
+    position:relative;
+    top:auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header glass">
+  <a href="../index.html">← Back</a>
+  <span>TypeVerse User Guide</span>
+</header>
+
+<!-- MAIN -->
+<main class="container">
+
+  <!-- NAV -->
+  <aside class="guide-nav glass">
+    <h3>Guide Sections</h3>
+    <button class="active" onclick="load('intro',this)">🚀 Getting Started</button>
+    <button onclick="load('difficulty',this)">🎯 Difficulty Levels</button>
+    <button onclick="load('custom',this)">✍️ Custom Practice Text</button>
+    <button onclick="load('timer',this)">⏱ Timer & Custom Time</button>
+    <button onclick="load('results',this)">📊 Results & Heatmap</button>
+    <button onclick="load('tips',this)">💡 Typing Tips</button>
+  </aside>
+
+  <!-- CONTENT -->
+  <section id="content" class="guide-content glass"></section>
+
+</main>
+
+<script>
+/* ================= THEME ================= */
+if(localStorage.getItem("tv_theme")==="light"){
+  document.body.classList.add("light");
+}
+
+/* ================= CONTENT DATA ================= */
+const sections={
+  intro:`
+    <h1>Getting Started</h1>
+    <p>
+      TypeVerse helps you improve typing speed and accuracy
+      through focused, structured practice.
+    </p>
+    <ul>
+      <li>Select a difficulty</li>
+      <li>Choose a time duration</li>
+      <li>Start typing with accuracy</li>
+    </ul>
+    <div class="tip">⌨️ Accuracy builds speed. Speed follows consistency.</div>
+  `,
+  difficulty:`
+    <h1>Difficulty Levels</h1>
+    <ul>
+      <li><b>Easy</b> – Common words</li>
+      <li><b>Normal</b> – Mixed vocabulary</li>
+      <li><b>Hard</b> – Advanced words</li>
+      <li><b>Extreme</b> – Symbols & numbers</li>
+    </ul>
+  `,
+  custom:`
+    <h1>Custom Practice Text</h1>
+    <p>
+      Paste your own text (code, notes, exam material)
+      to practice exactly what you need.
+    </p>
+  `,
+  timer:`
+    <h1>Timer & Custom Time</h1>
+    <p>
+      Choose preset durations or define your own
+      to control focus and endurance.
+    </p>
+  `,
+  results:`
+    <h1>Results & Heatmap</h1>
+    <p>
+      After each test, TypeVerse shows detailed stats
+      and highlights problem keys using a keyboard heatmap.
+    </p>
+  `,
+  tips:`
+    <h1>Typing Tips</h1>
+    <ul>
+      <li>Focus on accuracy before speed</li>
+      <li>Use all fingers (touch typing)</li>
+      <li>Practice daily in short sessions</li>
+      <li>Relax hands and posture</li>
+    </ul>
+  `
+};
+
+/* ================= LOAD ================= */
+function load(key,btn){
+  document.getElementById("content").innerHTML=sections[key];
+  document.querySelectorAll(".guide-nav button")
+    .forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+/* INIT */
+load("intro",document.querySelector(".guide-nav button"));
+</script>
+
+</body>
+</html>

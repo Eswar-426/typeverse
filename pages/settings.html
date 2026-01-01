@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TypeVerse – Settings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ================= THEME ================= */
+:root{
+  --bg1:#04044f;
+  --bg2:#27743e;
+  --glass:rgba(27,27,66,.28);
+  --border:rgba(0,212,255,.25);
+  --text:#ffffff;
+  --muted:#b0b0b0;
+  --cyan:#00d4ff;
+  --purple:#7b2cbf;
+  --danger:#ff6b6b;
+}
+
+body.light{
+  --bg1:#f0f4ff;
+  --bg2:#c7d2fe;
+  --glass:rgba(255,255,255,.75);
+  --border:rgba(0,212,255,.3);
+  --text:#1a1a2e;
+  --muted:#5a5a7a;
+  --cyan:#00a8d4;
+  --purple:#6a1b9a;
+}
+
+/* ================= GLOBAL ================= */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:var(--text);
+  transition:.4s;
+}
+
+/* ================= GLASS ================= */
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+}
+
+/* ================= HEADER ================= */
+.header{
+  height:56px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:0 16px;
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:2000;
+}
+.menu-btn{
+  font-size:22px;
+  cursor:pointer;
+  background:none;
+  border:none;
+  color:var(--text);
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+  position:fixed;
+  top:56px;
+  bottom:0;
+  left:-260px;
+  width:260px;
+  padding:18px;
+  transition:.3s ease;
+  z-index:1500;
+}
+.sidebar.open{left:0}
+
+.sidebar a{
+  display:block;
+  padding:10px 12px;
+  margin-bottom:8px;
+  text-decoration:none;
+  color:var(--text);
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+}
+.sidebar a:hover{
+  background:rgba(255,255,255,.18);
+}
+
+/* ================= APP ================= */
+.app{
+  max-width:980px;
+  margin:90px auto 40px;
+  padding:22px;
+}
+
+/* ================= PAGE HEADER ================= */
+.page-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+h1{
+  margin:0;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.icons button{
+  background:none;
+  border:none;
+  font-size:20px;
+  color:var(--text);
+  cursor:pointer;
+  margin-left:10px;
+}
+
+/* ================= GRID ================= */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+.card{padding:18px}
+
+/* ================= FORMS ================= */
+select{
+  width:100%;
+  padding:10px;
+  border-radius:12px;
+  border:none;
+  background:rgba(255,255,255,.15);
+  color:var(--text);
+  outline:none;
+}
+
+/* 🔥 FIX: dropdown options visibility */
+select option{
+  background:#0f172a;
+  color:#ffffff;
+}
+body.light select option{
+  background:#ffffff;
+  color:#1a1a2e;
+}
+
+label{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:10px;
+}
+
+/* ================= DANGER ================= */
+.danger{
+  border:1px solid rgba(255,0,0,.5);
+}
+.danger button{
+  background:var(--danger);
+  color:#000;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* ================= FOOTER ================= */
+.footer{
+  text-align:center;
+  margin-top:22px;
+  font-size:14px;
+  color:var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header glass">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <strong>TypeVerse</strong>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar glass">
+  <a href="/index.html">⌨ Typing Test</a>
+  <a href="settings.html">⚙ Settings</a>
+  <a href="learning.html">📚 Learning</a>
+  <a href="games.html">🎮 Games</a>
+</aside>
+
+<!-- MAIN APP -->
+<div class="app glass">
+
+  <div class="page-head">
+    <h1>⚙ Settings</h1>
+    <div class="icons">
+      <button id="themeBtn">☀️</button>
+      <button id="fsBtn">⛶</button>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card glass">
+      <h3>🎨 Theme</h3>
+      <button onclick="setTheme('dark')">🌙 Dark</button>
+      <button onclick="setTheme('light')">☀️ Light</button>
+    </div>
+
+    <div class="card glass">
+      <h3>🔊 Sound</h3>
+      <label>
+        <input type="checkbox" id="sound">
+        Enable sound effects
+      </label>
+    </div>
+
+    <div class="card glass">
+      <h3>🔤 Font Size</h3>
+      <select id="fontSize">
+        <option value="14">Small</option>
+        <option value="16" selected>Medium</option>
+        <option value="18">Large</option>
+      </select>
+    </div>
+
+    <div class="card glass">
+      <h3>⏱ Default Time</h3>
+      <select id="duration">
+        <option value="15">15s</option>
+        <option value="30">30s</option>
+        <option value="60" selected>1m</option>
+        <option value="120">2m</option>
+        <option value="300">5m</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="card glass" style="margin-top:16px">
+    🔒 All data is stored locally. No servers. Full privacy.
+  </div>
+
+  <div class="card glass danger" style="margin-top:16px">
+    <h3>🗑 Danger Zone</h3>
+    <button onclick="resetAll()">Reset All Data</button>
+  </div>
+
+  <div class="footer">© 2025 TypeVerse</div>
+
+</div>
+
+<script>
+/* ===== SIDEBAR ===== */
+function toggleSidebar(){
+  sidebar.classList.toggle("open");
+}
+
+/* ===== THEME ===== */
+const savedTheme=localStorage.getItem("tv_theme")||"dark";
+if(savedTheme==="light")document.body.classList.add("light");
+themeBtn.textContent=savedTheme==="light"?"🌙":"☀️";
+
+function setTheme(t){
+  document.body.classList.toggle("light",t==="light");
+  localStorage.setItem("tv_theme",t);
+  themeBtn.textContent=t==="light"?"🌙":"☀️";
+}
+
+/* ===== FULLSCREEN ===== */
+fsBtn.onclick=()=>{
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+  }else document.exitFullscreen();
+};
+
+/* ===== SETTINGS ===== */
+const settings=JSON.parse(localStorage.getItem("tv_settings"))||{
+  sound:false,fontSize:16,duration:60
+};
+
+sound.checked=settings.sound;
+fontSize.value=settings.fontSize;
+duration.value=settings.duration;
+document.body.style.fontSize=settings.fontSize+"px";
+
+sound.onchange=e=>{settings.sound=e.target.checked;save()};
+fontSize.onchange=e=>{
+  settings.fontSize=e.target.value;
+  document.body.style.fontSize=e.target.value+"px";
+  save();
+};
+duration.onchange=e=>{settings.duration=e.target.value;save()};
+
+function save(){
+  localStorage.setItem("tv_settings",JSON.stringify(settings));
+}
+
+/* ===== RESET ===== */
+function resetAll(){
+  if(confirm("Delete all TypeVerse data?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
+</script>
+
+</body>
+</html>

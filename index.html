@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TypeVerse Premium v2.5</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ================== THEME VARIABLES ================== */
+:root {
+  --bg1:#04044f;
+  --bg2:#27743e;
+  --glass:rgba(27, 27, 66, 0.197);
+  --border:rgba(0,212,255,.2);
+  --text:#fff;
+  --muted:#b0b0b0;
+  --cyan:#00d4ff;
+  --purple:#7b2cbf;
+  --ok:#4ecca3;
+  --bad:#ff6b6b;
+}
+
+body.light {
+  --bg1:#f8f9ff;
+  --bg2:#383c96;
+  --glass:rgba(255, 255, 255, 0.337);
+  --border:rgba(0,212,255,.3);
+  --text:#1a1a2e;
+  --muted:#5a5a7a;
+  --cyan:#00a8d4;
+  --purple:#6a1b9a;
+}
+
+/* ================== GLOBAL ================== */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:.4s;
+}
+
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+}
+
+/* ================== APP ================== */
+.app{
+  width:100%;
+  max-width:1000px;   /* 🔥 increased */
+  padding:24px;
+}
+
+
+.fullscreen .app{
+  width:100%;
+  height:100%;
+  max-width:none;
+  border-radius:0;
+}
+
+/* ================== HEADER ================== */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+h1{
+  margin:0;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.icons button{
+  background:none;
+  border:none;
+  color:var(--text);
+  font-size:18px;
+  cursor:pointer;
+  margin-left:10px;
+}
+
+/* ================== CONTROLS ================== */
+.controls,.stats{
+  display:flex;
+  gap:10px;
+  margin:15px 0;
+}
+#soundBtn{
+  font-size:18px;
+  padding:8px 10px;
+  border-radius:10px;
+  min-width:42px;
+}
+
+select,button{
+  background:rgba(255,255,255,.15);
+  border:none;
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* ================== STATS ================== */
+.stat{
+  flex:1;
+  padding:10px;
+  text-align:center;
+}
+
+/* ================== TEXT ================== */
+#textDisplay{
+  padding:20px;
+  font-size:18px;
+  line-height:1.6;
+  min-height:120px;
+}
+.correct{color:var(--ok)}
+.incorrect{color:var(--bad)}
+.active{
+  text-decoration:underline;
+  text-shadow:0 0 10px var(--cyan);
+}
+input{
+  width:100%;
+  padding:14px;
+  font-size:16px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+}
+
+/* ================== RESULTS ================== */
+#results{
+  display:none;
+  margin-top:20px;
+}
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  margin:4px;
+  border-radius:20px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+}
+
+/* ================== CANVAS ================== */
+canvas{
+  margin-top:10px;
+  width:100%;
+  max-width:720px;
+}
+</style>
+</head>
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="sidebar.css">
+<script src="difficultyEngine.js"></script>
+<script src="customInputEngine.js"></script>
+
+<script src="sidebar.js"></script>
+
+<body>
+  <!-- ========== GLOBAL HEADER ========== -->
+<header class="tv-header glass">
+  <button id="menuBtn">☰</button>
+
+  <span class="logo">TypeVerse</span>
+</header>
+
+<!-- ========== SIDEBAR ========== -->
+<aside id="sidebar" class="tv-sidebar glass">
+  <h3>Menu</h3>
+  <nav>
+    <a href="pages/settings.html">⚙ Settings</a>
+    <a href="guide/guide.html">📘 User Guide</a>
+    <a href="pages/learning.html">📚 Learning Materials</a>
+    <a href="pages/games.html">🎮 Typing Games</a>
+  </nav>
+</aside>
+
+<!-- ========== MAIN WRAPPER ========== -->
+<main class="tv-main">
+
+<div class="app glass">
+
+
+<header>
+  <h1>⌨ TypeVerse</h1>
+  <div class="icons">
+    <button id="themeBtn">☀️</button>
+    <button id="fsBtn">⛶</button>
+  </div>
+</header>
+
+<div class="controls">
+  <select id="difficulty">
+    <option>Easy</option>
+    <option selected>Normal</option>
+    <option>Hard</option>
+    <option>Extreme</option>
+  </select>
+  <input type="number"
+       id="customTime"
+       placeholder="Custom time (sec)"
+       min="10"
+       class="glass">
+
+  <select id="duration">
+    <option value="15" selected>15s</option>
+    <option value="30">30s</option>
+    <option value="60">1m</option>
+    <option value="120">2m</option>
+    <option value="300">5m</option>
+    <option value="600">10m</option>
+  </select>
+  <button id="soundBtn" title="Toggle sound">🔇</button>
+  <button id="resetBtn">Reset</button>
+</div>
+
+<textarea id="customText"
+  placeholder="Paste your own practice text here (optional)..."
+  rows="3"
+  class="glass"
+></textarea>
+
+
+<div class="stats">
+  <div class="stat glass">WPM<br><b id="wpm">0</b></div>
+  <div class="stat glass">Accuracy<br><b id="acc">100%</b></div>
+  <div class="stat glass">CPM<br><b id="cpm">0</b></div>
+  <div class="stat glass">Errors<br><b id="err">0</b></div>
+  <div class="stat glass">⏱<br><b id="time">60</b></div>
+</div>
+
+<div id="textDisplay" class="glass"></div>
+<input id="input" placeholder="Start typing…" autofocus>
+
+<div id="results" class="glass">
+  <h2>Results</h2>
+  <p><b>Final WPM:</b> <span id="finalWpm"></span></p>
+  <p><b>Problem Keys:</b> <span id="problemKeys"></span></p>
+  <canvas id="keyboardCanvas" width="720" height="240"></canvas>
+  <div id="badges"></div>
+</div>
+
+</main>
+<footer class="tv-footer glass">
+  <span>© 2025 TypeVerse</span>
+  <span>Built for speed & accuracy ⌨️</span>
+</footer>
+
+</div>
+
+<script>
+/* ================== TEXT ================== */
+const TEXTS=[
+ "Code is poetry written for machines.",
+ "Accuracy builds speed over time.",
+ "Consistency beats intensity.",
+ "Typing is muscle memory."
+];
+
+/* ================== KEYBOARD ================== */
+const KEYBOARD = [
+  { keys: ["q","w","e","r","t","y","u","i","o","p"], offset: 0 },
+  { keys: ["a","s","d","f","g","h","j","k","l"], offset: 25 },
+  { keys: ["z","x","c","v","b","n","m"], offset: 55 }
+];
+
+
+/* ================== STATE ================== */
+let startTime=null,timer=null,timeLeft=60;
+let testCompleted = false;
+
+let errors=0,keyErrors={};
+
+/* ================== ELEMENTS ================== */
+const textDisplay=input.previousElementSibling;
+const canvas=document.getElementById("keyboardCanvas");
+const ctx=canvas.getContext("2d");
+
+/* ================== FUNCTIONS ================== */
+function loadText(){
+  textDisplay.innerHTML = "";
+
+  const difficulty = document.getElementById("difficulty").value;
+  let finalText = resolveTestText(difficulty);
+
+  // Normalize newlines
+  finalText = finalText.replace(/\r\n/g, "\n");
+
+  for(let i = 0; i < finalText.length; i++){
+    const span = document.createElement("span");
+    span.textContent = finalText[i]; // KEEP text as-is
+    textDisplay.appendChild(span);
+  }
+}
+
+
+function startTimer(){
+ startTime=Date.now();
+ timer=setInterval(()=>{
+  timeLeft--;
+  time.textContent=timeLeft;
+  if(timeLeft<=0) endTest();
+ },1000);
+}
+
+function endTest(){
+ clearInterval(timer);
+ input.disabled=true;
+ testCompleted = true;
+ showResults();
+}
+/* ================== SOUND ENGINE (NO FILES) ================== */
+
+// default sound OFF if settings not present
+function soundEnabled(){
+  const s = JSON.parse(localStorage.getItem("tv_settings"));
+  return s?.sound === true;
+}
+
+
+let audioCtx = null;
+
+function getAudioCtx(){
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+
+function unlockAudio(){
+  const ctx = getAudioCtx();
+  if(ctx.state === "suspended") ctx.resume();
+}
+
+// unlock on first real user action
+input.addEventListener("focus", unlockAudio, { once:true });
+document.addEventListener("click", unlockAudio, { once:true });
+
+function playMechanicalSound(type){
+  if(!soundEnabled()) return;
+
+  const ctx = getAudioCtx();
+  if(ctx.state === "suspended") return;
+
+  const osc = ctx.createOscillator();
+  const noise = ctx.createBufferSource();
+  const gain = ctx.createGain();
+
+  // oscillator (click tone)
+  osc.type = "square";
+  osc.frequency.value = type === "correct" ? 800 : 220;
+
+  // noise (key hit texture)
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<data.length;i++){
+    data[i] = Math.random() * 2 - 1;
+  }
+  noise.buffer = buffer;
+
+  // envelope
+  gain.gain.setValueAtTime(0.12, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+
+  osc.connect(gain);
+  noise.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  noise.start();
+
+  osc.stop(ctx.currentTime + 0.05);
+  noise.stop(ctx.currentTime + 0.05);
+}
+
+
+function playCorrectSound(){
+  playMechanicalSound("correct");
+}
+
+function playErrorSound(){
+  playMechanicalSound("error");
+}
+const soundBtn = document.getElementById("soundBtn");
+
+function updateSoundIcon(){
+  soundBtn.textContent = soundEnabled() ? "🔊" : "🔇";
+}
+
+soundBtn.onclick = () => {
+  const s = JSON.parse(localStorage.getItem("tv_settings")) || {};
+  s.sound = !soundEnabled();
+  localStorage.setItem("tv_settings", JSON.stringify(s));
+  updateSoundIcon();
+};
+
+// initialize on load
+updateSoundIcon();
+function autoScrollToActive(){
+  const active = textDisplay.querySelector(".active");
+  if(!active) return;
+
+  const container = textDisplay;
+
+  const activeRect = active.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  // If active character is below visible area
+  if(activeRect.bottom > containerRect.bottom){
+    container.scrollTop += activeRect.bottom - containerRect.bottom + 10;
+  }
+
+  // If active character is above visible area (rare but safe)
+  if(activeRect.top < containerRect.top){
+    container.scrollTop -= containerRect.top - activeRect.top + 10;
+  }
+}
+
+input.addEventListener("input", () => {
+  if(!startTime) startTimer();
+
+  const spans = textDisplay.querySelectorAll("span");
+  const val = input.value;
+
+  errors = 0;
+  let lastWasCorrect = true;
+  const lastIndex = val.length - 1;
+
+  spans.forEach((s, i) => {
+    s.className = "";
+
+    if(val[i] == null) return;
+
+    if(val[i] === s.textContent){
+      s.className = "correct";
+    }else{
+      s.className = "incorrect";
+      errors++;
+      keyErrors[s.textContent] = (keyErrors[s.textContent] || 0) + 1;
+
+      if(i === lastIndex){
+        lastWasCorrect = false;
+      }
+    }
+  });
+
+  // 🔊 play sound ONCE per keystroke
+  if(lastIndex >= 0){
+    lastWasCorrect ? playCorrectSound() : playErrorSound();
+  }
+
+  if(spans[val.length]){
+    spans[val.length].classList.add("active");
+  }
+  
+  autoScrollToActive();
+
+  const mins = (Date.now() - startTime) / 60000;
+  const gross = (val.length / 5) / mins || 0;
+  const net = Math.max(0, gross - (errors / 5) / mins);
+
+  wpm.textContent = Math.round(net);
+  acc.textContent = Math.round(((val.length - errors) / val.length) * 100 || 100) + "%";
+  cpm.textContent = Math.round((val.length - errors) / mins || 0);
+  err.textContent = errors;
+});
+
+
+function heatColor(v,max){
+ const r=v/max;
+ if(r>.66) return "#ff4d4d";
+ if(r>.33) return "#ffd93d";
+ return "#4ecca3";
+}
+
+function drawKeyboard(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.font = "14px system-ui";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  const keySize = 50;
+  const gap = 10;
+  const startY = 30;
+
+  const max = Math.max(...Object.values(keyErrors), 1);
+
+  KEYBOARD.forEach((row, rowIndex) => {
+    let x = 30 + row.offset;
+    let y = startY + rowIndex * (keySize + gap);
+
+    row.keys.forEach(key => {
+      const count = keyErrors[key] || 0;
+
+      ctx.fillStyle = heatColor(count, max);
+      ctx.fillRect(x, y, keySize, keySize);
+
+      ctx.fillStyle = "#000";
+      ctx.fillText(key.toUpperCase(), x + keySize/2, y + keySize/2);
+
+      x += keySize + gap;
+    });
+  });
+}
+
+
+function showResults(){
+ results.style.display="block";
+ finalWpm.textContent=wpm.textContent;
+ const probs=Object.entries(keyErrors)
+   .sort((a,b)=>b[1]-a[1])
+   .slice(0,5).map(e=>e[0]);
+ problemKeys.textContent=probs.join(", ")||"None 🎉";
+ drawKeyboard();
+ showBadges();
+ if(testCompleted){
+  badges.innerHTML += `<span class="badge">Press F for Fullscreen ⛶</span>`;
+}
+}
+
+/* ================== ACHIEVEMENTS ================== */
+function showBadges(){
+ badges.innerHTML="";
+ const h=new Date().getHours();
+ if(wpm.textContent>=150) badges.innerHTML+=`<span class="badge">Speed Demon 🚀</span>`;
+ if(+acc.textContent.replace("%","")>=99) badges.innerHTML+=`<span class="badge">Accuracy Master 🎯</span>`;
+ if(errors===0) badges.innerHTML+=`<span class="badge">Perfect Run 💯</span>`;
+ if(h>=22) badges.innerHTML+=`<span class="badge">Night Owl 🌙</span>`;
+ if(+duration.value>=600) badges.innerHTML+=`<span class="badge">Endurance ⏱️</span>`;
+}
+
+/* ================== RESET ================== */
+function reset(){
+ clearInterval(timer);
+ input.value="";
+ input.disabled=false;
+ startTime=null;
+ testCompleted=false;
+ errors=0;
+ keyErrors={};
+ const customTimeInput = document.getElementById("customTime").value;
+setCustomTime(customTimeInput);
+
+timeLeft = resolveTestTime(+duration.value);
+
+ time.textContent=timeLeft;
+ results.style.display="none";
+ loadText();
+}
+resetBtn.onclick=reset;
+duration.onchange=reset;
+
+/* ================== THEME ================== */
+function applyTheme(t){
+ document.body.classList.toggle("light",t==="light");
+ localStorage.setItem("tv_theme",t);
+ themeBtn.textContent=t==="light"?"🌙":"☀️";
+}
+applyTheme(localStorage.getItem("tv_theme")||"dark");
+themeBtn.onclick=()=>{
+ applyTheme(document.body.classList.contains("light")?"dark":"light");
+};
+
+/* ================== FULLSCREEN ================== */
+function toggleFS(){
+ if(!document.fullscreenElement){
+  document.documentElement.requestFullscreen();
+ }else document.exitFullscreen();
+}
+fsBtn.onclick=toggleFS;
+
+document.addEventListener("fullscreenchange",()=>{
+ document.body.classList.toggle("fullscreen",!!document.fullscreenElement);
+});
+
+document.addEventListener("keydown", e => {
+  // Disable fullscreen ONLY while test is running
+  if (startTime !== null && !testCompleted) return;
+
+  // Ignore when typing in input
+  if (document.activeElement === input) return;
+
+  if (e.key === "f" || e.key === "F") {
+    e.preventDefault();
+    toggleFS();
+  }
+});
+
+
+document.getElementById("customText").addEventListener("input", e => {
+  setCustomText(e.target.value);
+  restartTest();   // 🔥 THIS WAS MISSING
+});
+
+document.getElementById("difficulty").addEventListener("change", () => {
+  restartTest();
+});
+
+
+/* ================== INIT ================== */
+reset();
+</script>
+</body>
+</html>
